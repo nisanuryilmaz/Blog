@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ustbaslik %}
+    Üye Girişi
+{% endblock %}
+{% block icerik %}
+    <div class="col-lg-6 col-lg-offset-3">
+
+
+        <form method="post" action="{% url 'user_login' %}">
+
+            <p class="lead">Üye Girişi</p>
+            <hr>
+                    {% csrf_token %}
+
+            {% include 'form_template.html' %}
+            <input type="hidden" name="nextt" value="{{ next }}"/>
+            <input type="submit" value="Giriş" class="btn btn-success">
+            <br>
+            <br>
+            {% if hata_mesaji %}
+                <h4 style="text-align: center ; color: #761c19">{{ hata_mesaji }}</h4>
+            {% endif %}
+        </form>
+    </div>
+{% endblock %}

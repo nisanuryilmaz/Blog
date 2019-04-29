@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block kod_ekle %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.show_comment').click(function (e) {
+                e.preventDefault();
+                $(this).parent().parent().children('.comment_child').toggle();
+
+            });
+
+            $('.answer').click(function (e) {
+                e.preventDefault();
+                $(this).parent().parent().children('.comment_answer').toggle();
+
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block ustbaslik %}
+    Gönderi Detay Sayfası
+{% endblock %}
+{% block icerik %}
+    <style>
+
+        .img-circle {
+            max-width: 65px;
+            max-height: 65px;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <div class="row">
+        <div class="col-lg-offset-2 col-lg-8">
+            <h2 class="page-header">{{ post.title|upper }}
+                <small>{{ post.create_date }}
+                </small>
+            </h2>
+            {% if post.get_image_or_default %}
+                <img src="{{ post.get_image_or_default }}" class="img-responsive">
+            {% endif %}
+
+            <p>
+                <br>
+                {{ post.content|safe }}
+                <br>
+            </p>
+            <h4>
+                <b style="color: #761c19">Yazar ~ {{ post.user.get_full_name }}</b>
+                <a class="btn btn-info" href="#" style="margin-left: 10px">Takip Et</a>
+                <a href="{% url 'favorite' post.pk %}?next ={% url 'post_detail' post.pk %}"
+                   class="btn btn-sm btn-default">
+                    {% if request.user.username in post.get_add_favorite_user %}
+                        <span class="glyphicon glyphicon-star active">
+
+                       </span>
+                    {% else %}
+                        <span class="glyphicon glyphicon-star">
+
+                       </span>
+                    {% endif %}
+
+                </a>
+
+            </h4>
+
+            <a href="https://www.facebook.com/sharer/sharer.php?u=%20{{ request.build_absolute_uri }}"
+               title="Facebook Paylaş">
+                Facebook
+            </a>
+            <a href="https://twitter.com/home?status=
+
+
+                    {{ post.title|safe }}{{ share_link|safe }}{{ post.content|safe|truncatechars:80 }}%20{{ request.build_absolute_uri }}"
+               title="Twitter Paylaş">
+                Twitter
+            </a>
+            <a href='https://plus.google.com/share?url={{ request.build_absolute_uri }}'
+               title="Goole+ Paylaş">Google+</a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://swiftforentrepreneurs.com/&title={{ post.title }}%20is%20a%20project-based%20programming%20course%20for%20non-technical%20founders.%20We'll%20learn%20how%20to%20build%20iOS%20apps%20from%20scratch%20using%20Apple's%20new%20programming%20language:%20Swift.%20Be%20first%20and%20learn%20with%20me!&source={{ request.build_absolute_uri }}"
+               title="Linkedin Paylaş">Linkedin
+            </a>
+            <br>
+            <br>
+            {% if post.etiket.all %}
+                <p style="color:#761c19"> ETİKETLER:</p>
+                {% for etiket in post.etiket.all %}
+
+                    {{ etiket.isim }}
+
+                {% endfor %}
+            {% endif %}
+
+            <br><br>
+            {% if request.user == post.user %}
+                <a class="btn btn-info" href="{% url 'post_update' post.pk %}">Güncelle</a>
+                <a class="btn btn-danger" href="{% url 'post_delete' post.pk %}">Sil</a>
+            {% endif %}
+            <br>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-sm-offset-2">
+            {% if post.comment.all %}<h2 class="page-header">Yorumlar ({{ post.comment.all|length }})</h2>
+                {% for comment in post.comment.all %}
+                    <div class="col-lg-2">
+
+                        <img style="margin-left: 20px" src="{{ comment.user.userprofile.profilPhoto.url }}"
+                             class="img-responsive img-circle">
+                    </div>
+                    <div class="col-lg-10">
+                        <p class="lead" style="color: #761c19">{{ comment.user.get_full_name }} ,
+                            <small style="color: #0E2231">{{ comment.tarih |timesince }}</small>
+                        </p>
+                        <p>{{ comment.icerik }}
+
+                        </p>
+                        <p>
+                            {% if comment.comment_child.all %}
+                                <a class="show_comment"
+                                   href="#">Göster({{ comment.comment_child.all|length }})</a>{% endif %}
+                            <a class="answer" style="margin-left: 5px" href="#">Yanıtla</a>
+
+                            <a href="{% url 'like' comment.pk post.pk %}?next ={% url 'post_detail' post.pk %}"
+                               style="margin-left: 5px">Beğen({{ comment.comment_like_count }})</a>
+
+                        </p>
+                        <div class="comment_answer" style="display: none">
+                            <div class="col-lg-12">
+
+                                <form method="post" action="{% url 'add_child_comment' comment.pk %}">
+                                    {% csrf_token %}
+                                    {% include 'form_template.html' %}
+                                    <input type="submit" value="Yorum Yap" class="btn btn-info">
+                                </form>
+                            </div>
+
+                        </div>
+                        <div style="display:none" class="comment_child">
+
+                            {% for child_comment in comment.comment_child.all %}
+                                <div class="col-lg-2 ">
+
+                                    <img style="margin-left: 20px"
+                                         src="{{ child_comment.user.userprofile.profilPhoto.url }}"
+                                         class="img-responsive img-circle">
+                                </div>
+                                <p class="lead" style="color: #761c19">{{ child_comment.user.get_full_name }} ,
+                                    <small style="color: #0E2231">{{ child_comment.tarih |timesince }}</small>
+                                </p>
+                                <p>{{ child_comment.icerik }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <hr>
+                    </div>
+                {% endfor %}
+
+            {% endif %}
+        </div>
+        <br>
+        {% if request.user.is_authenticated %}
+
+            <div class="row">
+
+                <div class="col-lg-8 col-lg-offset-2">
+
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        {% include 'form_template.html' %}
+                        <input type="submit" value="Yorum Yap" class="btn btn-info">
+                    </form>
+                </div>
+
+            </div>
+        {% else %}
+            <div class="col-lg-6 col-lg-offset-2">
+                <a href="{% url 'user_login' %}">Yorum yapmak için üye girişi yapınız</a>
+            </div>
+        {% endif %}
+        <div class="col-lg-4 col-lg-offset-10">
+            <a href="{% url 'post_list' %}">Gönderiler Listesine Git</a>
+        </div>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ustbaslik %}
+    Üye Olma
+{% endblock %}
+{% block icerik %}
+    <div class="col-lg-6 , col-sm-offset-3">
+        <form action="#" method="post">
+            <p class="lead">ÜYE OLMA</p>
+            <hr>
+            {% include 'form_template.html' %}
+            {% csrf_token %}
+            <input type="submit" value="Üye Ol" class="btn btn-success">
+
+        </form>
+    </div>
+{% endblock %}

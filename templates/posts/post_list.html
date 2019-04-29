@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load html_tag %}
+{% block ustbaslik %}
+    {{ ustbaslik.base }}  Gönderiler Listesi
+{% endblock %}
+{% block icerik %}
+    <div class="col-lg-6 col-lg-offset-2">
+
+        <form method="get">
+            {% for field in filter_form %}
+                <div class="form-group">
+                    <div class="col-lg-4 " style="padding: 0">
+                {{ field }}
+            </div>
+                </div>
+            {% endfor %}
+            <div class="form-group">
+                <div class="col-lg-8">
+                    <input type="submit" class="btn btn-info" value="Sorgula">
+
+                </div>
+
+            </div>
+
+        </form>
+        <hr>
+        <br>
+        {% if post_list|post_count > 0 %}
+
+            {% for post in post_list %}
+                <h3><a href="{% url 'post_detail' post.pk %}">{{ post.title |upper }} </a>
+                    <small>{{ post.create_date |timesince }} </small>
+                    {% if post.draft %}
+                        <small style="color: #1b6d85"> Taslak</small>
+                    {% endif %}
+
+                </h3>
+                {% if post.get_image_or_default %}
+                    <img src="{{ post.get_image_or_default }}" class="img-responsive">
+                {% endif %}
+                <h4><b style="color: #761c19">Yazar ~ {{ post.user.get_full_name }}</b>&nbsp&nbsp
+                    <b>&nbsp{{ post.counter }} <b class="glyphicon glyphicon-eye-open"
+                                                  style="margin-right:10px;"></b>{{ post.comment_count }}</b> <span
+                            class="glyphicon glyphicon-comment"></span>
+                    <a href="{% url 'fav' post.pk %}"> <b style="margin-left: 10px">{{ post.favori_count }}</b> <span
+                            class="glyphicon glyphicon-star active"></span></a>
+                </h4>
+
+                <p>{{ post.content|safe|truncatewords_html:50 }}</p>
+                <br>
+            {% endfor %}
+        {% else %}
+            {% for user in user_list %}
+
+                {{ user.full_name }}
+
+            {% endfor %}
+        {% endif %}
+
+
+        {% if post_list.has_other_pages %}
+            <ul class="pagination">
+                {% if post_list.has_previous %}
+                    <li><a href="?page={{ post_list.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in post_list.paginator.page_range %}
+                    {% if post_list.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if post_list.has_next %}
+                    <li><a href="?page={{ post_list.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+{% endblock %}

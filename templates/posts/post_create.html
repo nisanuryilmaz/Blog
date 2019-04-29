@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ustbaslik %}
+    Gönderi Ekleme
+{% endblock %}
+{% block icerik %}
+    <div class="col-lg-4 col-lg-offset-4">
+        <h3 class="page-header">Gönderi Ekleme</h3>
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.media }}
+            {% include 'form_template.html' %}
+            <input type="submit" value="Kaydet" class="btn btn-success">
+        </form>
+
+    </div>
+{% endblock %}

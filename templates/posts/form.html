@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Örneği</title>
+</head>
+<body>
+<form action="" method="GET">
+    <h3>İçinden geleni yaz...:)</h3>
+    <input type="text" name="mesaj">
+    <input type="submit" name="gonder">
+</form>
+
+<div>
+    {% if gelen_mesaj %}
+        <h3>Mesajınız:</h3>
+        {{ gelen_mesaj }}
+    {% endif %}
+</div>
+
+</body>
+</html>

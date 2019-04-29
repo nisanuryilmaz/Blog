@@ -1,0 +1,12 @@
+
+
+
+
+.glyphicon-star{
+    color: #cccccc;
+    font-size: 16px;
+}
+
+.glyphicon-star.active{
+    color: #997700;
+}

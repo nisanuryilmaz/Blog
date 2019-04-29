@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block ustbaslik %}
+    Etiketler
+{% endblock %}
+{% block icerik %}
+    <div class="col-lg-6 , col-lg-offset-3">
+        <p class="lead">Etiket Ekleme</p>
+        <hr>
+
+        <form method="post" action="">
+            {% include 'form_template.html' %}
+            {% csrf_token %}
+            <input type="submit" value="Ekle" class="btn btn-success">
+        </form>
+        <br>
+         <b>Etiketler</b>
+
+             {% for i in tag %}
+
+                 <li>{{ i.isim }}   ~<a href="{% url 'tag_delete' i.pk %}" style="margin-left: fill">Sil</a>
+             {% endfor %}</li>
+
+
+    </div>
+{% endblock %}
